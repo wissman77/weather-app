@@ -6,13 +6,15 @@ async function getData(requestedUrl, cityName, units) {
   url.searchParams.set('units', units);
   url.searchParams.set('appid', apiKey);
 
+  let data = {};
   try {
     const response = await fetch(url, { mode: 'cors' });
-    const data = await response.json();
+    data = await response.json();
     return data;
   } catch (error) {
     console.log(error);
   }
+  return data;
 }
 
 async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
@@ -37,7 +39,7 @@ async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
 }
 
 async function getWeatherDataFor5Days(cityName, units = 'metric') {
-  const data = getData(
+  const data = await getData(
     'https://api.openweathermap.org/data/2.5/weather',
     cityName,
     units
