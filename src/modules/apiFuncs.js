@@ -31,19 +31,37 @@ async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
     temp: data.main.temp,
     feelsLike: data.main.feels_like,
     humidity: data.main.humidity,
+    icon: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
     windSpeed: data.wind.speed,
+    units: units,
   };
 
-  console.log(data);
+  // console.log(data);
   return currentData;
 }
 
 async function getWeatherDataFor5Days(cityName, units = 'metric') {
   const data = await getData(
-    'https://api.openweathermap.org/data/2.5/weather',
+    'https://api.openweathermap.org/data/2.5/forecast',
     cityName,
     units
   );
+
+  const weatherDays = [];
+  for (let i = 0; i < data.list.length; i += 8) {
+    const weatherDay = {
+      dateTime: new Date(data.list[i].dt * 1000),
+      temp: data.list[i].main.temp,
+      description: data.list[i].weather[0].description,
+      icon: `http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2xx.png`,
+      humidity: data.list[i].main.humidity,
+      windSpeed: data.list[i].wind.speed,
+    };
+
+    weatherDays.push(weatherDay);
+  }
+
+  return weatherDays;
 }
 
 export { getCurrentWeatherDataByCity, getWeatherDataFor5Days };
