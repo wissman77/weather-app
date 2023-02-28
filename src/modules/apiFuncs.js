@@ -10,19 +10,23 @@ async function getData(requestedUrl, cityName, units) {
   try {
     const response = await fetch(url, { mode: 'cors' });
     data = await response.json();
-    return data;
   } catch (error) {
-    console.log(error);
+    return error;
   }
   return data;
 }
 
 async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
-  const data = await getData(
-    'https://api.openweathermap.org/data/2.5/weather',
-    cityName,
-    units
-  );
+  let data;
+  try {
+    data = await getData(
+      'https://api.openweathermap.org/data/2.5/weather',
+      cityName,
+      units
+    );
+  } catch (error) {
+    return error;
+  }
 
   const currentData = {
     cityName: data.name,
@@ -42,11 +46,16 @@ async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
 }
 
 async function getWeatherDataFor5Days(cityName, units = 'metric') {
-  const data = await getData(
-    'https://api.openweathermap.org/data/2.5/forecast',
-    cityName,
-    units
-  );
+  let data;
+  try {
+    data = await getData(
+      'https://api.openweathermap.org/data/2.5/forecast',
+      cityName,
+      units
+    );
+  } catch (error) {
+    return error;
+  }
 
   const weatherDays = [];
   for (let i = 0; i < data.list.length; i += 8) {
@@ -54,9 +63,10 @@ async function getWeatherDataFor5Days(cityName, units = 'metric') {
       dateTime: new Date(data.list[i].dt * 1000),
       temp: data.list[i].main.temp,
       description: data.list[i].weather[0].description,
-      icon: `http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2xx.png`,
+      icon: `http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png`,
       humidity: data.list[i].main.humidity,
       windSpeed: data.list[i].wind.speed,
+      units,
     };
 
     weatherDays.push(weatherDay);
