@@ -33,6 +33,7 @@ async function getCurrentWeatherDataByCity(cityName, units = 'metric') {
     humidity: data.main.humidity,
     icon: `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`,
     windSpeed: data.wind.speed,
+    description: data.weather[0].description,
     units: units,
   };
 
